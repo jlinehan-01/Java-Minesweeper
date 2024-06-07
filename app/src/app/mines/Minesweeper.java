@@ -21,9 +21,10 @@ public class Minesweeper extends GameGrid
     }
     private void initGame()
     {
-        show();
         showStatusBar(true);
         setTitle(TITLE);
+        show();
+        generateTiles();
         renderBackground();
     }
     private void renderBackground()
@@ -37,5 +38,16 @@ public class Minesweeper extends GameGrid
             }
         }
         bg.drawGridLines(GRID_COLOR);
+    }
+    private void generateTiles()
+    {
+        for (int y = 0; y < getHeight(); y++)
+        {
+            for (int x = 0; x < getWidth(); x++)
+            {
+                Actor tile = new Actor("unopened.png");
+                addActor(tile, new Location(x,y));
+            }
+        }
     }
 }
