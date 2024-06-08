@@ -7,7 +7,8 @@ import java.util.Random;
 
 public class Minesweeper extends GameGrid implements GGMouseListener
 {
-    private final static int CELL_SIZE = 30;
+    private static final int CELL_SIZE = 30;
+    private static final int SIMULATION_PERIOD = 20;
     private static final Color GRID_COLOR = Color.BLACK;
     private static final Color BACKGROUND_COLOR = Color.lightGray;
     private static final String TITLE = "Java Minesweeper";
@@ -20,6 +21,7 @@ public class Minesweeper extends GameGrid implements GGMouseListener
     {
         super(width, height, CELL_SIZE, GRID_COLOR, false);
         assert(numMines < (width * height));
+        simulationPeriod = SIMULATION_PERIOD;
         this.numMines = numMines;
         addMouseListener(this, GGMouse.lClick | GGMouse.rClick | GGMouse.lDClick);
         board = new Tile[height][width];
