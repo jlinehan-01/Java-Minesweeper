@@ -10,6 +10,12 @@ public class Tile extends Actor
     private static final int FLAG_SPRITE = 13;
     private int openedSpriteIndex;
     private boolean opened = false;
+
+    public boolean isFlagged()
+    {
+        return flagged;
+    }
+
     private boolean flagged = false;
     private int surroundingMines;
 
@@ -34,21 +40,10 @@ public class Tile extends Actor
         {
             show(openedSpriteIndex);
             opened = true;
+            // open surrounds of empty tiles
             if (surroundingMines == 0)
             {
-                int x = getX();
-                int y = getY();
-                for (int i = x - 1; i <= x + 1; i++)
-                {
-                    for (int j = y - 1; j <= y + 1; j++)
-                    {
-                        try
-                        {
-                            board[j][i].open(board);
-                        }
-                        catch (IndexOutOfBoundsException _){}
-                    }
-                }
+                openSurroundingTiles(board);
             }
         }
     }
@@ -68,7 +63,16 @@ public class Tile extends Actor
             }
         }
     }
-    void clear(){}
+    void clear(Tile[][] board)
+    {
+        if (opened)
+        {
+            if (numSurroundingFlags(board) == surroundingMines)
+            {
+                openSurroundingTiles(board);
+            }
+        }
+    }
     void calculateSurroundingMines(Tile[][] board)
     {
         // skip for mines
@@ -105,5 +109,42 @@ public class Tile extends Actor
         {
             openedSpriteIndex = numMines;
         }
+    }
+    private void openSurroundingTiles(Tile[][] board)
+    {
+        int x = getX();
+        int y = getY();
+        for (int i = x - 1; i <= x + 1; i++)
+        {
+            for (int j = y - 1; j <= y + 1; j++)
+            {
+                try
+                {
+                    board[j][i].open(board);
+                }
+                catch (IndexOutOfBoundsException _){}
+            }
+        }
+    }
+    private int numSurroundingFlags(Tile[][] board)
+    {
+        int numFlags = 0;
+        int x = getX();
+        int y = getY();
+        for (int i = x - 1; i <= x + 1; i++)
+        {
+            for (int j = y - 1; j <= y + 1; j++)
+            {
+                try
+                {
+                    if (board[j][i].isFlagged())
+                    {
+                        numFlags++;
+                    }
+                }
+                catch (IndexOutOfBoundsException _){}
+            }
+        }
+        return numFlags;
     }
 }

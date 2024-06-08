@@ -91,7 +91,7 @@ public class Minesweeper extends GameGrid implements GGMouseListener
                 case GGMouse.rClick:
                     board[location.getY()][location.getX()].flag();
                 case GGMouse.lDClick:
-                    board[location.getY()][location.getX()].clear();
+                    board[location.getY()][location.getX()].clear(board);
             }
         }
         return true;
