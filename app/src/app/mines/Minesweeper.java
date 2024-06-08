@@ -5,23 +5,25 @@ import ch.aplu.jgamegrid.*;
 import java.awt.*;
 import java.util.Random;
 
-public class Minesweeper extends GameGrid
+public class Minesweeper extends GameGrid implements GGMouseListener
 {
     private final static int CELL_SIZE = 30;
     private static final Color GRID_COLOR = Color.BLACK;
     private static final Color BACKGROUND_COLOR = Color.lightGray;
     private static final String TITLE = "Java Minesweeper";
 
-    private Random rand = new Random();
-
     public Minesweeper(int width, int height, int mines)
     {
         super(width, height, CELL_SIZE, GRID_COLOR, false);
+        addMouseListener(this, GGMouse.lClick | GGMouse.rClick | GGMouse.lDClick);
     }
+
     public void runGame()
     {
         initGame();
+        doRun();
     }
+
     private void initGame()
     {
         showStatusBar(true);
@@ -30,6 +32,7 @@ public class Minesweeper extends GameGrid
         generateTiles();
         show();
     }
+
     private void renderBackground()
     {
         GGBackground bg = getBg();
@@ -42,18 +45,28 @@ public class Minesweeper extends GameGrid
         }
         bg.drawGridLines(GRID_COLOR);
     }
+
     private void generateTiles()
     {
-        System.out.println("starting generateTiles");
         for (int y = 0; y < getNbVertCells(); y++)
         {
             for (int x = 0; x < getNbHorzCells(); x++)
             {
-                String[] files = {"unopened.png", "mine.png", "empty.png", "hit.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png"};
-                int i = rand.nextInt(files.length);
-                Actor tile = new Actor(files[i]);
-                addActor(tile, new Location(x,y));
+                Actor tile = new Tile();
+                addActor(tile, new Location(x, y));
             }
         }
+    }
+
+    @Override
+    public boolean mouseEvent(GGMouse ggMouse)
+    {
+        Location location = toLocationInGrid(ggMouse.getX(), ggMouse.getY());
+        if (location != null)
+        {
+            Actor tile = getOneActorAt(location);
+            tile.showNextSprite();
+        }
+        return true;
     }
 }
