@@ -82,7 +82,7 @@ public class Minesweeper extends GameGrid implements GGMouseListener
                 case GGMouse.lClick:
                     if (minesSet)
                     {
-                        board[location.getY()][location.getX()].open();
+                        board[location.getY()][location.getX()].open(board);
                     }
                     else
                     {
@@ -118,7 +118,7 @@ public class Minesweeper extends GameGrid implements GGMouseListener
                 board[y][x].calculateSurroundingMines(board);
             }
         }
-        board[location.getY()][location.getX()].open();
+        board[location.getY()][location.getX()].open(board);
         minesSet = true;
     }
 }

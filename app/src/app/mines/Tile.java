@@ -28,12 +28,28 @@ public class Tile extends Actor
     {
         super("unopened.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "empty.png", "mine.png", "hit.png", "flag.png");
     }
-    void open()
+    void open(Tile[][] board)
     {
-        if (!flagged)
+        if (!flagged && !opened)
         {
             show(openedSpriteIndex);
             opened = true;
+            if (surroundingMines == 0)
+            {
+                int x = getX();
+                int y = getY();
+                for (int i = x - 1; i <= x + 1; i++)
+                {
+                    for (int j = y - 1; j <= y + 1; j++)
+                    {
+                        try
+                        {
+                            board[j][i].open(board);
+                        }
+                        catch (IndexOutOfBoundsException _){}
+                    }
+                }
+            }
         }
     }
     void flag()
