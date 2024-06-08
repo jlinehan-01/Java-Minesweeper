@@ -17,11 +17,12 @@ public class Minesweeper extends GameGrid implements GGMouseListener
     private final Random random = new Random();
     private final Tile[][] board;
     private boolean minesSet = false;
+    private boolean alive = true;
 
     public Minesweeper(int width, int height, int numMines)
     {
         super(width, height, CELL_SIZE, GRID_COLOR, false);
-        assert(numMines < (width * height));
+        assert (numMines < (width * height));
         simulationPeriod = SIMULATION_PERIOD;
         this.numMines = numMines;
         addMouseListener(this, GGMouse.lClick | GGMouse.rClick | GGMouse.lDClick);
@@ -35,10 +36,26 @@ public class Minesweeper extends GameGrid implements GGMouseListener
         }
     }
 
-    public int runGame()
+    public void mineHit()
+    {
+        alive = false;
+    }
+
+    public synchronized int runGame()
     {
         initGame();
         doRun();
+        while (alive)
+        {
+            try
+            {
+                wait();
+            } catch (InterruptedException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+        loss();
         return LOSS;
     }
 
@@ -86,24 +103,25 @@ public class Minesweeper extends GameGrid implements GGMouseListener
                 case GGMouse.lClick:
                     if (minesSet)
                     {
-                        board[location.getY()][location.getX()].open(board);
-                    }
-                    else
+                        board[location.getY()][location.getX()].open(board, this);
+                    } else
                     {
                         setMines(location);
                     }
                 case GGMouse.rClick:
                     board[location.getY()][location.getX()].flag();
                 case GGMouse.lDClick:
-                    board[location.getY()][location.getX()].clear(board);
+                    board[location.getY()][location.getX()].clear(board, this);
             }
         }
+        onClick();
         return true;
     }
+
     private void setMines(Location location)
     {
         // place mines
-        for (int i = 0; i < numMines;)
+        for (int i = 0; i < numMines; )
         {
             int x = random.nextInt(getNbHorzCells());
             int y = random.nextInt(getNbVertCells());
@@ -122,7 +140,22 @@ public class Minesweeper extends GameGrid implements GGMouseListener
                 board[y][x].calculateSurroundingMines(board);
             }
         }
-        board[location.getY()][location.getX()].open(board);
+        board[location.getY()][location.getX()].open(board, this);
         minesSet = true;
+    }
+    private synchronized void onClick()
+    {
+        notify();
+    }
+    private void loss()
+    {
+        for (Tile[] row : board)
+        {
+            for (Tile tile : row)
+            {
+                tile.showMine();
+            }
+        }
+        removeMouseListener(this);
     }
 }

@@ -6,6 +6,7 @@ public class Tile extends Actor
 {
     private static final int UNOPENED_SPRITE = 0;
     private static final int EMPTY_SPRITE = 10;
+    private static final int MINE_SPRITE = 11;
     private static final int HIT_SPRITE = 12;
     private static final int FLAG_SPRITE = 13;
     private int openedSpriteIndex;
@@ -34,16 +35,20 @@ public class Tile extends Actor
     {
         super("unopened.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "empty.png", "mine.png", "hit.png", "flag.png");
     }
-    void open(Tile[][] board)
+    void open(Tile[][] board, Minesweeper game)
     {
         if (!flagged && !opened)
         {
             show(openedSpriteIndex);
             opened = true;
-            // open surrounds of empty tiles
-            if (surroundingMines == 0)
+            if (containsMine)
             {
-                openSurroundingTiles(board);
+                game.mineHit();
+            }
+            // open surrounds of empty tiles
+            else if (surroundingMines == 0)
+            {
+                openSurroundingTiles(board, game);
             }
         }
     }
@@ -63,13 +68,13 @@ public class Tile extends Actor
             }
         }
     }
-    void clear(Tile[][] board)
+    void clear(Tile[][] board, Minesweeper game)
     {
-        if (opened)
+        if (opened && !containsMine)
         {
             if (numSurroundingFlags(board) == surroundingMines)
             {
-                openSurroundingTiles(board);
+                openSurroundingTiles(board, game);
             }
         }
     }
@@ -110,7 +115,7 @@ public class Tile extends Actor
             openedSpriteIndex = numMines;
         }
     }
-    private void openSurroundingTiles(Tile[][] board)
+    private void openSurroundingTiles(Tile[][] board, Minesweeper game)
     {
         int x = getX();
         int y = getY();
@@ -120,7 +125,7 @@ public class Tile extends Actor
             {
                 try
                 {
-                    board[j][i].open(board);
+                    board[j][i].open(board, game);
                 }
                 catch (IndexOutOfBoundsException _){}
             }
@@ -146,5 +151,12 @@ public class Tile extends Actor
             }
         }
         return numFlags;
+    }
+    public void showMine()
+    {
+        if (containsMine && !opened)
+        {
+            show(MINE_SPRITE);
+        }
     }
 }
