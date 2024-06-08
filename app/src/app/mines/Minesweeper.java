@@ -11,11 +11,25 @@ public class Minesweeper extends GameGrid implements GGMouseListener
     private static final Color GRID_COLOR = Color.BLACK;
     private static final Color BACKGROUND_COLOR = Color.lightGray;
     private static final String TITLE = "Java Minesweeper";
+    private final int numMines;
+    private final Random random = new Random();
+    private final Tile[][] board;
+    private boolean minesSet = false;
 
-    public Minesweeper(int width, int height, int mines)
+    public Minesweeper(int width, int height, int numMines)
     {
         super(width, height, CELL_SIZE, GRID_COLOR, false);
+        assert(numMines < (width * height));
+        this.numMines = numMines;
         addMouseListener(this, GGMouse.lClick | GGMouse.rClick | GGMouse.lDClick);
+        board = new Tile[height][width];
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                board[y][x] = new Tile();
+            }
+        }
     }
 
     public void runGame()
@@ -52,8 +66,7 @@ public class Minesweeper extends GameGrid implements GGMouseListener
         {
             for (int x = 0; x < getNbHorzCells(); x++)
             {
-                Actor tile = new Tile();
-                addActor(tile, new Location(x, y));
+                addActor(board[y][x], new Location(x, y));
             }
         }
     }
@@ -64,9 +77,48 @@ public class Minesweeper extends GameGrid implements GGMouseListener
         Location location = toLocationInGrid(ggMouse.getX(), ggMouse.getY());
         if (location != null)
         {
-            Actor tile = getOneActorAt(location);
-            tile.showNextSprite();
+            switch (ggMouse.getEvent())
+            {
+                case GGMouse.lClick:
+                    if (minesSet)
+                    {
+                        board[location.getY()][location.getX()].open();
+                    }
+                    else
+                    {
+                        setMines(location);
+                    }
+                case GGMouse.rClick:
+                    board[location.getY()][location.getX()].flag();
+                case GGMouse.lDClick:
+                    board[location.getY()][location.getX()].clear();
+            }
         }
         return true;
+    }
+    private void setMines(Location location)
+    {
+        // place mines
+        for (int i = 0; i < numMines;)
+        {
+            int x = random.nextInt(getNbHorzCells());
+            int y = random.nextInt(getNbVertCells());
+            if (board[y][x].containsMine() || (x == location.getX() && y == location.getY()))
+            {
+                continue;
+            }
+            board[y][x].setMine();
+            i++;
+        }
+        // calculate numbers
+        for (int y = 0; y < getNbVertCells(); y++)
+        {
+            for (int x = 0; x < getNbHorzCells(); x++)
+            {
+                board[y][x].calculateSurroundingMines(board);
+            }
+        }
+        board[location.getY()][location.getX()].open();
+        minesSet = true;
     }
 }
