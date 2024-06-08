@@ -11,6 +11,7 @@ public class Driver
     public static void main(String[] args)
     {
         Minesweeper game = new Minesweeper(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_NUM_MINES);
-        game.runGame();
+        int result = game.runGame();
+        System.out.println(result);
     }
 }
