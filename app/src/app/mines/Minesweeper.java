@@ -7,21 +7,21 @@ import java.util.Random;
 
 public class Minesweeper extends GameGrid implements GGMouseListener
 {
+    public static final int LOSS = -1;
     private static final int CELL_SIZE = 30;
     private static final int SIMULATION_PERIOD = 20;
-    public static final int LOSS = -1;
     private static final int STATUS_BAR_HEIGHT = 30;
     private static final Color GRID_COLOR = Color.BLACK;
     private static final Color BACKGROUND_COLOR = Color.lightGray;
     private static final String TITLE = "Java Minesweeper";
     private final int numMines;
+    private final int target;
     private final Random random = new Random();
     private final Tile[][] board;
+    private final StatusBar statusBar;
     private boolean minesSet = false;
     private boolean alive = true;
     private int tilesOpened = 0;
-    private final int target;
-    private final StatusBar statusBar;
 
     public Minesweeper(int width, int height, int numMines)
     {
@@ -40,11 +40,6 @@ public class Minesweeper extends GameGrid implements GGMouseListener
         }
         target = (height * width) - numMines;
         statusBar = new StatusBar(this, numMines);
-    }
-
-    public void mineHit()
-    {
-        alive = false;
     }
 
     public synchronized int runGame()
@@ -82,40 +77,6 @@ public class Minesweeper extends GameGrid implements GGMouseListener
         }
     }
 
-    private void initGame()
-    {
-        showStatusBar(true);
-        setTitle(TITLE);
-        renderBackground();
-        generateTiles();
-        show();
-        addStatusBar(STATUS_BAR_HEIGHT);
-    }
-
-    private void renderBackground()
-    {
-        GGBackground bg = getBg();
-        for (int y = 0; y < getNbVertCells(); y++)
-        {
-            for (int x = 0; x < getNbHorzCells(); x++)
-            {
-                bg.fillCell(new Location(x, y), BACKGROUND_COLOR);
-            }
-        }
-        bg.drawGridLines(GRID_COLOR);
-    }
-
-    private void generateTiles()
-    {
-        for (int y = 0; y < getNbVertCells(); y++)
-        {
-            for (int x = 0; x < getNbHorzCells(); x++)
-            {
-                addActor(board[y][x], new Location(x, y));
-            }
-        }
-    }
-
     @Override
     public boolean mouseEvent(GGMouse ggMouse)
     {
@@ -142,6 +103,46 @@ public class Minesweeper extends GameGrid implements GGMouseListener
         }
         onClick();
         return true;
+    }
+
+    public void mineHit()
+    {
+        alive = false;
+    }
+
+    public void addFlag()
+    {
+        statusBar.addFlag();
+    }
+
+    public void removeFlag()
+    {
+        statusBar.removeFlag();
+    }
+
+    public void tileOpened()
+    {
+        tilesOpened++;
+    }
+
+    private void initGame()
+    {
+        showStatusBar(true);
+        setTitle(TITLE);
+        generateTiles();
+        show();
+        addStatusBar(STATUS_BAR_HEIGHT);
+    }
+
+    private void generateTiles()
+    {
+        for (int y = 0; y < getNbVertCells(); y++)
+        {
+            for (int x = 0; x < getNbHorzCells(); x++)
+            {
+                addActor(board[y][x], new Location(x, y));
+            }
+        }
     }
 
     private void setMines(Location location)
@@ -186,11 +187,6 @@ public class Minesweeper extends GameGrid implements GGMouseListener
         }
     }
 
-    public void tileOpened()
-    {
-        tilesOpened++;
-    }
-
     private boolean gameWon()
     {
         return tilesOpened == target;
@@ -208,13 +204,5 @@ public class Minesweeper extends GameGrid implements GGMouseListener
                 }
             }
         }
-    }
-    public void addFlag()
-    {
-        statusBar.addFlag();
-    }
-    public void removeFlag()
-    {
-        statusBar.removeFlag();
     }
 }

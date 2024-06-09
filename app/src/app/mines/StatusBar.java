@@ -8,8 +8,8 @@ public class StatusBar implements Runnable
     private static final int MILLISECONDS_PER_SECOND = 1000;
     private static final int REFRESH_RATE = 500;
     private final GameGrid game;
-    private long startTime;
     private final int numMines;
+    private long startTime;
     private int numFlags = 0;
     private boolean timerStarted = false;
     private boolean gameOver = false;
@@ -48,12 +48,6 @@ public class StatusBar implements Runnable
         timerStarted = true;
     }
 
-    private void setText()
-    {
-        long duration = (System.currentTimeMillis() / MILLISECONDS_PER_SECOND) - startTime;
-        game.setStatusText("Mines: " + (numMines - numFlags) + " Time: " + duration);
-    }
-
     public int stopTimer()
     {
         gameOver = true;
@@ -70,5 +64,11 @@ public class StatusBar implements Runnable
     {
         numFlags--;
         notify();
+    }
+
+    private void setText()
+    {
+        long duration = (System.currentTimeMillis() / MILLISECONDS_PER_SECOND) - startTime;
+        game.setStatusText("Mines: " + (numMines - numFlags) + " Time: " + duration);
     }
 }
