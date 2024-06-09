@@ -18,6 +18,8 @@ public class Minesweeper extends GameGrid implements GGMouseListener
     private final Tile[][] board;
     private boolean minesSet = false;
     private boolean alive = true;
+    private int tilesOpened = 0;
+    private final int target;
 
     public Minesweeper(int width, int height, int numMines)
     {
@@ -34,6 +36,7 @@ public class Minesweeper extends GameGrid implements GGMouseListener
                 board[y][x] = new Tile();
             }
         }
+        target = (height * width) - numMines;
     }
 
     public void mineHit()
@@ -50,13 +53,27 @@ public class Minesweeper extends GameGrid implements GGMouseListener
             try
             {
                 wait();
-            } catch (InterruptedException e)
+            }
+            catch (InterruptedException e)
             {
                 throw new RuntimeException(e);
             }
+            if (gameWon())
+            {
+                break;
+            }
         }
-        loss();
-        return LOSS;
+        removeMouseListener(this);
+        if (alive)
+        {
+            setFlags();
+            return 1;
+        }
+        else
+        {
+            showMines();
+            return LOSS;
+        }
     }
 
     private void initGame()
@@ -104,7 +121,8 @@ public class Minesweeper extends GameGrid implements GGMouseListener
                     if (minesSet)
                     {
                         board[location.getY()][location.getX()].open(board, this);
-                    } else
+                    }
+                    else
                     {
                         setMines(location);
                     }
@@ -143,11 +161,13 @@ public class Minesweeper extends GameGrid implements GGMouseListener
         board[location.getY()][location.getX()].open(board, this);
         minesSet = true;
     }
+
     private synchronized void onClick()
     {
         notify();
     }
-    private void loss()
+
+    private void showMines()
     {
         for (Tile[] row : board)
         {
@@ -156,6 +176,29 @@ public class Minesweeper extends GameGrid implements GGMouseListener
                 tile.showMine();
             }
         }
-        removeMouseListener(this);
+    }
+
+    public void tileOpened()
+    {
+        tilesOpened++;
+    }
+
+    private boolean gameWon()
+    {
+        return tilesOpened == target;
+    }
+
+    private void setFlags()
+    {
+        for (Tile[] row : board)
+        {
+            for (Tile tile : row)
+            {
+                if (tile.containsMine() && !tile.isFlagged())
+                {
+                    tile.flag();
+                }
+            }
+        }
     }
 }
