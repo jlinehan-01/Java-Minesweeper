@@ -10,6 +10,7 @@ public class Minesweeper extends GameGrid implements GGMouseListener
     private static final int CELL_SIZE = 30;
     private static final int SIMULATION_PERIOD = 20;
     public static final int LOSS = -1;
+    private static final int STATUS_BAR_HEIGHT = 30;
     private static final Color GRID_COLOR = Color.BLACK;
     private static final Color BACKGROUND_COLOR = Color.lightGray;
     private static final String TITLE = "Java Minesweeper";
@@ -20,6 +21,7 @@ public class Minesweeper extends GameGrid implements GGMouseListener
     private boolean alive = true;
     private int tilesOpened = 0;
     private final int target;
+    private final StatusBar statusBar;
 
     public Minesweeper(int width, int height, int numMines)
     {
@@ -37,6 +39,7 @@ public class Minesweeper extends GameGrid implements GGMouseListener
             }
         }
         target = (height * width) - numMines;
+        statusBar = new StatusBar(this, numMines);
     }
 
     public void mineHit()
@@ -48,6 +51,8 @@ public class Minesweeper extends GameGrid implements GGMouseListener
     {
         initGame();
         doRun();
+        Thread thread = new Thread(statusBar);
+        thread.start();
         while (alive)
         {
             try
@@ -64,10 +69,11 @@ public class Minesweeper extends GameGrid implements GGMouseListener
             }
         }
         removeMouseListener(this);
+        int score = statusBar.stopTimer();
         if (alive)
         {
             setFlags();
-            return 1;
+            return score;
         }
         else
         {
@@ -83,6 +89,7 @@ public class Minesweeper extends GameGrid implements GGMouseListener
         renderBackground();
         generateTiles();
         show();
+        addStatusBar(STATUS_BAR_HEIGHT);
     }
 
     private void renderBackground()
@@ -125,9 +132,10 @@ public class Minesweeper extends GameGrid implements GGMouseListener
                     else
                     {
                         setMines(location);
+                        statusBar.startTimer();
                     }
                 case GGMouse.rClick:
-                    board[location.getY()][location.getX()].flag();
+                    board[location.getY()][location.getX()].flag(this);
                 case GGMouse.lDClick:
                     board[location.getY()][location.getX()].clear(board, this);
             }
@@ -196,9 +204,17 @@ public class Minesweeper extends GameGrid implements GGMouseListener
             {
                 if (tile.containsMine() && !tile.isFlagged())
                 {
-                    tile.flag();
+                    tile.flag(this);
                 }
             }
         }
+    }
+    public void addFlag()
+    {
+        statusBar.addFlag();
+    }
+    public void removeFlag()
+    {
+        statusBar.removeFlag();
     }
 }

@@ -54,7 +54,7 @@ public class Tile extends Actor
             }
         }
     }
-    void flag()
+    void flag(Minesweeper game)
     {
         if (!opened)
         {
@@ -62,11 +62,13 @@ public class Tile extends Actor
             {
                 show(UNOPENED_SPRITE);
                 flagged = false;
+                game.removeFlag();
             }
             else
             {
                 show(FLAG_SPRITE);
                 flagged = true;
+                game.addFlag();
             }
         }
     }
