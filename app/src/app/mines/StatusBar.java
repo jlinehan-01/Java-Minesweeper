@@ -60,13 +60,15 @@ public class StatusBar implements Runnable
         return (int) ((System.currentTimeMillis() / MILLISECONDS_PER_SECOND) - startTime);
     }
 
-    public void addFlag()
+    public synchronized void addFlag()
     {
         numFlags++;
+        notify();
     }
 
-    public void removeFlag()
+    public synchronized void removeFlag()
     {
         numFlags--;
+        notify();
     }
 }
