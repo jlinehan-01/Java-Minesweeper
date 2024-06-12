@@ -51,7 +51,9 @@ public class StatusBar implements Runnable
     public int stopTimer()
     {
         gameOver = true;
-        return (int) ((System.currentTimeMillis() / MILLISECONDS_PER_SECOND) - startTime);
+        int score = (int) ((System.currentTimeMillis() / MILLISECONDS_PER_SECOND) - startTime);
+        setText(score);
+        return score;
     }
 
     public synchronized void addFlag()
@@ -70,5 +72,9 @@ public class StatusBar implements Runnable
     {
         long duration = (System.currentTimeMillis() / MILLISECONDS_PER_SECOND) - startTime;
         game.setStatusText("Mines: " + (numMines - numFlags) + " Time: " + duration);
+    }
+    private void setText(int score)
+    {
+        game.setStatusText("Mines: " + (numMines - numFlags) + " Time: " + score);
     }
 }
