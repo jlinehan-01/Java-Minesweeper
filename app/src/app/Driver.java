@@ -14,7 +14,7 @@ public class Driver
         int numMines = menu.getNumMines();
         int height = menu.getBoardHeight();
         int width = menu.getBoardWidth();
-        menu.dispose();
+        menu.close();
         Minesweeper game = new Minesweeper(width, height, numMines);
         int result = game.runGame();
         System.out.println(result);

@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Menu extends JFrame implements ActionListener
+public class Menu implements ActionListener
 {
     private static final int HEIGHT = 310;
     private static final int WIDTH = 287;
@@ -27,37 +27,57 @@ public class Menu extends JFrame implements ActionListener
     private int boardHeight;
     private int boardWidth;
     private int numMines;
+    private final JFrame frame;
 
     public Menu(String title)
     {
-        super(title);
-        setSize(WIDTH, HEIGHT);
-        setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame = new JFrame(title);
+        frame.setSize(WIDTH, HEIGHT);
+        frame.setResizable(false);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel panel = new JPanel();
-        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        panel.setLayout(new GridLayout(2, 3));
+        JPanel backgroundPanel = new JPanel();
+        backgroundPanel.setLayout(new BoxLayout(backgroundPanel, BoxLayout.Y_AXIS));
+        backgroundPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        JLabel label = new JLabel(title, JLabel.CENTER);
+        JPanel titlePanel = new JPanel(new BorderLayout());
+        titlePanel.setBorder(BorderFactory.createEmptyBorder());
+        JLabel titleLabel = new JLabel(title, JLabel.CENTER);
+        titlePanel.add(titleLabel);
+
+        JPanel difficultyButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
         JButton easyButton = new JButton("Easy");
-        easyButton.addActionListener(this);
         JButton mediumButton = new JButton("Medium");
-        mediumButton.addActionListener(this);
         JButton hardButton = new JButton("Hard");
+
+        difficultyButtonPanel.add(easyButton);
+        difficultyButtonPanel.add(mediumButton);
+        difficultyButtonPanel.add(hardButton);
+
+        easyButton.addActionListener(this);
+        mediumButton.addActionListener(this);
         hardButton.addActionListener(this);
-        JLabel topLeft = new JLabel();
-        JLabel topRight = new JLabel();
 
-        panel.add(topLeft);
-        panel.add(label);
-        panel.add(topRight);
-        panel.add(easyButton);
-        panel.add(mediumButton);
-        panel.add(hardButton);
+        Component topMargin = Box.createRigidArea(new Dimension(261, 47));
+        Component bottomMargin = Box.createRigidArea(new Dimension(261, 47));
 
-        add(panel, BorderLayout.CENTER);
-        setVisible(true);
+        JPanel difficultyButtonPanelHolder = new JPanel(new BorderLayout());
+        difficultyButtonPanelHolder.add(difficultyButtonPanel, BorderLayout.CENTER);
+        difficultyButtonPanelHolder.add(topMargin, BorderLayout.NORTH);
+        difficultyButtonPanelHolder.add(bottomMargin, BorderLayout.SOUTH);
+
+        backgroundPanel.add(titlePanel);
+        backgroundPanel.add(difficultyButtonPanelHolder);
+
+        titlePanel.setPreferredSize(new Dimension(261, 135));
+
+        frame.add(backgroundPanel);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
+        System.out.println(difficultyButtonPanelHolder.getSize());
+        System.out.println(titlePanel.getSize());
     }
 
     @Override
@@ -112,5 +132,9 @@ public class Menu extends JFrame implements ActionListener
                 throw new RuntimeException(e);
             }
         }
+    }
+    public void close()
+    {
+        frame.dispose();
     }
 }
