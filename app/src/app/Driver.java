@@ -1,5 +1,6 @@
 package app;
 
+import app.gui.Menu;
 import app.mines.Minesweeper;
 
 public class Driver
