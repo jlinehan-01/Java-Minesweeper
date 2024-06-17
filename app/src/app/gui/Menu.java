@@ -2,33 +2,33 @@ package app.gui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
 
 public class Menu
 {
-    private static final int HEIGHT = 310;
-    private static final int WIDTH = 287;
-    private static final int FIELD_NUM_COLUMNS = 4;
     public static final String EASY_BUTTON_TEXT = "Easy";
     public static final String MEDIUM_BUTTON_TEXT = "Medium";
     public static final String HARD_BUTTON_TEXT = "Hard";
-    public static final String WIDTH_FIELD_DEFAULT = "Width";
-    public static final String HEIGHT_FIELD_DEFAULT = "Height";
-    public static final String MINES_FIELD_DEFAULT = "Mines";
+
+    private static final int HEIGHT = 310;
+    private static final int WIDTH = 287;
+    private static final int FIELD_NUM_COLUMNS = 4;
+    private static final String WIDTH_FIELD_DEFAULT = "Width";
+    private static final String HEIGHT_FIELD_DEFAULT = "Height";
+    private static final String MINES_FIELD_DEFAULT = "Mines";
+
+    private final DifficultyButtonHandler difficultyButtonHandler;
+    private final CustomButtonHandler customButtonHandler;
+    private final JFrame frame;
 
     private int boardHeight;
     private int boardWidth;
     private int numMines;
-    private final ActionEventHandler buttonClickHandler;
-    private final JFrame frame;
-    private final JTextField widthField = new JTextField(WIDTH_FIELD_DEFAULT, FIELD_NUM_COLUMNS);
-    private final JTextField heightField = new JTextField(HEIGHT_FIELD_DEFAULT, FIELD_NUM_COLUMNS);
-    private final JTextField numMinesField = new JTextField(MINES_FIELD_DEFAULT, FIELD_NUM_COLUMNS);
+    private boolean buttonPressed = false;
+    private JLabel errorText;
 
     public Menu(String title)
     {
-        buttonClickHandler = new ActionEventHandler(this);
+        difficultyButtonHandler = new DifficultyButtonHandler(this);
         FocusEventHandler focusEventHandler = new FocusEventHandler();
 
         // initialise frame
@@ -46,17 +46,17 @@ public class Menu
         // difficulty buttons
         JPanel difficultyButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-        JButton easyButton = new JButton("Easy");
-        JButton mediumButton = new JButton("Medium");
-        JButton hardButton = new JButton("Hard");
+        JButton easyButton = new JButton(EASY_BUTTON_TEXT);
+        JButton mediumButton = new JButton(MEDIUM_BUTTON_TEXT);
+        JButton hardButton = new JButton(HARD_BUTTON_TEXT);
 
         difficultyButtonPanel.add(easyButton);
         difficultyButtonPanel.add(mediumButton);
         difficultyButtonPanel.add(hardButton);
 
-        easyButton.addActionListener(buttonClickHandler);
-        mediumButton.addActionListener(buttonClickHandler);
-        hardButton.addActionListener(buttonClickHandler);
+        easyButton.addActionListener(difficultyButtonHandler);
+        mediumButton.addActionListener(difficultyButtonHandler);
+        hardButton.addActionListener(difficultyButtonHandler);
 
         // difficulty button holder
         JPanel difficultyButtonPanelHolder = new JPanel(new GridLayout(3, 1));
@@ -66,10 +66,19 @@ public class Menu
 
         // custom game fields
         JPanel customGameFields = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        JTextField widthField = new JTextField(WIDTH_FIELD_DEFAULT, FIELD_NUM_COLUMNS);
+        JTextField heightField = new JTextField(HEIGHT_FIELD_DEFAULT, FIELD_NUM_COLUMNS);
+        JTextField numMinesField = new JTextField(MINES_FIELD_DEFAULT, FIELD_NUM_COLUMNS);
+        customButtonHandler = new CustomButtonHandler(widthField, heightField, numMinesField, this);
+
         widthField.addFocusListener(focusEventHandler);
         heightField.addFocusListener(focusEventHandler);
         numMinesField.addFocusListener(focusEventHandler);
+
         JButton customButton = new JButton("Custom");
+        customButton.addActionListener(customButtonHandler);
+
         customGameFields.add(widthField);
         customGameFields.add(heightField);
         customGameFields.add(numMinesField);
@@ -77,10 +86,10 @@ public class Menu
 
         // custom game fields holder
         JPanel customGamePanel = new JPanel(new BorderLayout());
-        JLabel customGameLabel = new JLabel("", JLabel.CENTER);
-        customGameLabel.setForeground(Color.RED);
+        errorText = new JLabel("", JLabel.CENTER);
+        errorText.setForeground(Color.RED);
         customGamePanel.add(customGameFields);
-        customGamePanel.add(customGameLabel, BorderLayout.SOUTH);
+        customGamePanel.add(errorText, BorderLayout.SOUTH);
 
         // background panel
         JPanel backgroundPanel = new JPanel();
@@ -116,7 +125,7 @@ public class Menu
 
     private synchronized void waitForButtonPress()
     {
-        if (!buttonClickHandler.buttonPressed())
+        if (!buttonPressed)
         {
             try
             {
@@ -151,6 +160,12 @@ public class Menu
 
     public synchronized void boardSet()
     {
+        buttonPressed = true;
         notifyAll();
+    }
+
+    public void setErrorText(String errorMessage)
+    {
+        errorText.setText(errorMessage);
     }
 }

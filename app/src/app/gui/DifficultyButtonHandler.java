@@ -3,7 +3,7 @@ package app.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ActionEventHandler implements ActionListener
+public class DifficultyButtonHandler implements ActionListener
 {
     private static final int EASY_NUM_MINES = 10;
     private static final int EASY_WIDTH = 9;
@@ -16,9 +16,8 @@ public class ActionEventHandler implements ActionListener
     private static final int HARD_HEIGHT = 16;
 
     private final Menu parent;
-    private boolean buttonPressed = false;
 
-    public ActionEventHandler(Menu parent)
+    public DifficultyButtonHandler(Menu parent)
     {
         this.parent = parent;
     }
@@ -26,7 +25,6 @@ public class ActionEventHandler implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        buttonPressed = true;
         switch (e.getActionCommand())
         {
             case Menu.EASY_BUTTON_TEXT:
@@ -46,10 +44,5 @@ public class ActionEventHandler implements ActionListener
                 break;
         }
         parent.boardSet();
-    }
-
-    public boolean buttonPressed()
-    {
-        return buttonPressed;
     }
 }
