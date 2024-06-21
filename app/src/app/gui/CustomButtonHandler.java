@@ -27,7 +27,7 @@ public class CustomButtonHandler implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         // parse fields to int
-        if (!verifyInput(widthField.getText()) || !verifyInput(heightField.getText()) || !verifyInput(numMinesField.getText()))
+        if (badInput(widthField.getText()) || badInput(heightField.getText()) || badInput(numMinesField.getText()))
         {
             parent.setErrorText("Values must be integers");
             return;
@@ -67,16 +67,16 @@ public class CustomButtonHandler implements ActionListener
         parent.boardSet();
     }
 
-    private boolean verifyInput(String text)
+    private boolean badInput(String text)
     {
         try
         {
             Integer.parseInt(text);
-            return true;
+            return false;
         }
         catch (NumberFormatException e)
         {
-            return false;
+            return true;
         }
     }
 }

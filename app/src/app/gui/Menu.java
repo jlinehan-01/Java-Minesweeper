@@ -16,19 +16,16 @@ public class Menu
     private static final String HEIGHT_FIELD_DEFAULT = "Height";
     private static final String MINES_FIELD_DEFAULT = "Mines";
 
-    private final DifficultyButtonHandler difficultyButtonHandler;
-    private final CustomButtonHandler customButtonHandler;
     private final JFrame frame;
+    private final JLabel errorText;
 
     private int boardHeight;
     private int boardWidth;
     private int numMines;
     private boolean buttonPressed = false;
-    private JLabel errorText;
 
     public Menu(String title)
     {
-        difficultyButtonHandler = new DifficultyButtonHandler(this);
         FocusEventHandler focusEventHandler = new FocusEventHandler();
 
         // initialise frame
@@ -54,6 +51,7 @@ public class Menu
         difficultyButtonPanel.add(mediumButton);
         difficultyButtonPanel.add(hardButton);
 
+        DifficultyButtonHandler difficultyButtonHandler = new DifficultyButtonHandler(this);
         easyButton.addActionListener(difficultyButtonHandler);
         mediumButton.addActionListener(difficultyButtonHandler);
         hardButton.addActionListener(difficultyButtonHandler);
@@ -70,13 +68,13 @@ public class Menu
         JTextField widthField = new JTextField(WIDTH_FIELD_DEFAULT, FIELD_NUM_COLUMNS);
         JTextField heightField = new JTextField(HEIGHT_FIELD_DEFAULT, FIELD_NUM_COLUMNS);
         JTextField numMinesField = new JTextField(MINES_FIELD_DEFAULT, FIELD_NUM_COLUMNS);
-        customButtonHandler = new CustomButtonHandler(widthField, heightField, numMinesField, this);
 
         widthField.addFocusListener(focusEventHandler);
         heightField.addFocusListener(focusEventHandler);
         numMinesField.addFocusListener(focusEventHandler);
 
         JButton customButton = new JButton("Custom");
+        CustomButtonHandler customButtonHandler = new CustomButtonHandler(widthField, heightField, numMinesField, this);
         customButton.addActionListener(customButtonHandler);
 
         customGameFields.add(widthField);
@@ -111,16 +109,31 @@ public class Menu
         return numMines;
     }
 
+    public void setNumMines(int numMines)
+    {
+        this.numMines = numMines;
+    }
+
     public int getBoardHeight()
     {
         waitForButtonPress();
         return boardHeight;
     }
 
+    public void setBoardHeight(int boardHeight)
+    {
+        this.boardHeight = boardHeight;
+    }
+
     public int getBoardWidth()
     {
         waitForButtonPress();
         return boardWidth;
+    }
+
+    public void setBoardWidth(int boardWidth)
+    {
+        this.boardWidth = boardWidth;
     }
 
     private synchronized void waitForButtonPress()
@@ -141,21 +154,6 @@ public class Menu
     public void close()
     {
         frame.dispose();
-    }
-
-    public void setBoardHeight(int boardHeight)
-    {
-        this.boardHeight = boardHeight;
-    }
-
-    public void setBoardWidth(int boardWidth)
-    {
-        this.boardWidth = boardWidth;
-    }
-
-    public void setNumMines(int numMines)
-    {
-        this.numMines = numMines;
     }
 
     public synchronized void boardSet()
