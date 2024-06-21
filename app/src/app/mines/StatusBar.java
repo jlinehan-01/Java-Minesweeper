@@ -1,23 +1,24 @@
 package app.mines;
 
-import ch.aplu.jgamegrid.GameGrid;
-
 public class StatusBar implements Runnable
 {
     private static final int STATUS_BAR_HEIGHT = 30;
     private static final int MILLISECONDS_PER_SECOND = 1000;
     private static final int REFRESH_RATE = 500;
-    private final GameGrid game;
+
+    private final Minesweeper game;
+    private final Board board;
     private final int numMines;
+
     private long startTime;
-    private int numFlags = 0;
     private boolean timerStarted = false;
     private boolean gameOver = false;
 
-    public StatusBar(GameGrid game, int numMines)
+    public StatusBar(Minesweeper game, int numMines)
     {
         this.game = game;
         this.numMines = numMines;
+        board = game.getBoard();
         game.addStatusBar(STATUS_BAR_HEIGHT);
         game.setStatusText("Mines: " + numMines + " Time: 0");
     }
@@ -56,25 +57,19 @@ public class StatusBar implements Runnable
         return score;
     }
 
-    public synchronized void addFlag()
+    public synchronized void update()
     {
-        numFlags++;
-        notify();
-    }
-
-    public synchronized void removeFlag()
-    {
-        numFlags--;
         notify();
     }
 
     private void setText()
     {
         long duration = (System.currentTimeMillis() / MILLISECONDS_PER_SECOND) - startTime;
-        game.setStatusText("Mines: " + (numMines - numFlags) + " Time: " + duration);
+        game.setStatusText("Mines: " + (numMines - board.getNumFlags()) + " Time: " + duration);
     }
+
     private void setText(int score)
     {
-        game.setStatusText("Mines: " + (numMines - numFlags) + " Time: " + score);
+        game.setStatusText("Mines: " + (numMines - board.getNumFlags()) + " Time: " + score);
     }
 }
