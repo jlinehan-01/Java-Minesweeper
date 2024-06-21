@@ -8,12 +8,12 @@ import java.util.Random;
 public class Minesweeper extends GameGrid implements GGMouseListener
 {
     public static final int LOSS = -1;
+    public static final String TITLE = "Java Minesweeper";
     private static final int CELL_SIZE = 30;
-    private static final int SIMULATION_PERIOD = 20;
+    private static final int SIMULATION_PERIOD = 50;
     private static final int STATUS_BAR_HEIGHT = 30;
     private static final Color GRID_COLOR = Color.BLACK;
     private static final Color BACKGROUND_COLOR = Color.lightGray;
-    private static final String TITLE = "Java Minesweeper";
     private final int numMines;
     private final int target;
     private final Random random = new Random();
