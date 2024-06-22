@@ -12,8 +12,12 @@ public class Driver
         int height = menu.getBoardHeight();
         int width = menu.getBoardWidth();
         menu.close();
-        Minesweeper game = new Minesweeper(width, height, numMines);
+
+        ScoreHandler scoreHandler = new ScoreHandler();
+        int best = scoreHandler.getBest(width, height, numMines);
+
+        Minesweeper game = new Minesweeper(width, height, numMines, best);
         int result = game.runGame();
-        System.out.println(result);
+        scoreHandler.handleResult(width, height, numMines, result);
     }
 }
