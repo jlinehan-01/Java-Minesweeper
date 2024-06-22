@@ -142,7 +142,7 @@ public class Board
                     {
                         open(new Location(j, i));
                     }
-                    catch (ArrayIndexOutOfBoundsException _)
+                    catch (ArrayIndexOutOfBoundsException ignored)
                     {
                     }
                 }
@@ -169,7 +169,7 @@ public class Board
                         surroundingMines++;
                     }
                 }
-                catch (ArrayIndexOutOfBoundsException _)
+                catch (ArrayIndexOutOfBoundsException ignored)
                 {
                 }
             }
@@ -194,7 +194,7 @@ public class Board
                         surroundingFlags++;
                     }
                 }
-                catch (ArrayIndexOutOfBoundsException _)
+                catch (ArrayIndexOutOfBoundsException ignored)
                 {
                 }
             }
