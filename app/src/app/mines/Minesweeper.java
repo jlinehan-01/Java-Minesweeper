@@ -23,13 +23,13 @@ public class Minesweeper extends GameGrid implements GGMouseListener
     private boolean minesSet = false;
     private boolean alive = true;
 
-    public Minesweeper(int width, int height, int numMines)
+    public Minesweeper(int width, int height, int numMines, int best)
     {
         super(width, height, CELL_SIZE, GRID_COLOR, false);
         simulationPeriod = SIMULATION_PERIOD;
         addMouseListener(this, GGMouse.lClick | GGMouse.rClick | GGMouse.lDClick);
         board = new Board(this, width, height, numMines);
-        statusBar = new StatusBar(this, numMines);
+        statusBar = new StatusBar(this, numMines, best);
     }
 
     public synchronized int runGame()

@@ -16,7 +16,7 @@ public class Driver
         ScoreHandler scoreHandler = new ScoreHandler();
         int best = scoreHandler.getBest(width, height, numMines);
 
-        Minesweeper game = new Minesweeper(width, height, numMines);
+        Minesweeper game = new Minesweeper(width, height, numMines, best);
         int result = game.runGame();
         scoreHandler.handleResult(width, height, numMines, result);
     }

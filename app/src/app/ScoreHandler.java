@@ -1,12 +1,12 @@
 package app;
 
-import java.io.*;
-
 import app.mines.Minesweeper;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+
+import java.io.*;
 
 public class ScoreHandler
 {
