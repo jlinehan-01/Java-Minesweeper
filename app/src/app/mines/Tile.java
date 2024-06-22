@@ -9,6 +9,8 @@ public class Tile extends Actor
     private static final int MINE_SPRITE = 10;
     private static final int HIT_SPRITE = 11;
     private static final int FLAG_SPRITE = 12;
+    private static final int EMPTY = 0;
+
     private int openedSpriteIndex;
     private int surroundingMines;
     private boolean opened = false;
@@ -35,93 +37,30 @@ public class Tile extends Actor
         this.containsMine = true;
     }
 
-    public void open(Tile[][] board, Minesweeper game)
+    public boolean open()
     {
         if (!flagged && !opened)
         {
             show(openedSpriteIndex);
             opened = true;
-            if (containsMine)
-            {
-                game.mineHit();
-                return;
-            }
-            game.tileOpened();
-            // open surrounds of empty tiles
-            if (surroundingMines == 0)
-            {
-                openSurroundingTiles(board, game);
-            }
+            return true;
         }
+        return false;
     }
 
-    public void flag(Minesweeper game)
+    public boolean flag()
     {
-        if (!opened)
+        if (flagged)
         {
-            if (flagged)
-            {
-                show(UNOPENED_SPRITE);
-                flagged = false;
-                game.removeFlag();
-            }
-            else
-            {
-                show(FLAG_SPRITE);
-                flagged = true;
-                game.addFlag();
-            }
-        }
-    }
-
-    public void clear(Tile[][] board, Minesweeper game)
-    {
-        if (opened && !containsMine)
-        {
-            if (numSurroundingFlags(board) == surroundingMines)
-            {
-                openSurroundingTiles(board, game);
-            }
-        }
-    }
-
-    public void calculateSurroundingMines(Tile[][] board)
-    {
-        // skip for mines
-        if (containsMine)
-        {
-            openedSpriteIndex = HIT_SPRITE;
-            return;
-        }
-        // calculate number of mines around tile
-        int numMines = 0;
-        int x = getX();
-        int y = getY();
-        for (int i = x - 1; i <= x + 1; i++)
-        {
-            for (int j = y - 1; j <= y + 1; j++)
-            {
-                try
-                {
-                    if (board[j][i].containsMine())
-                    {
-                        numMines++;
-                    }
-                }
-                catch (IndexOutOfBoundsException _)
-                {
-                }
-            }
-        }
-        surroundingMines = numMines;
-        // set opened sprite
-        if (numMines == 0)
-        {
-            openedSpriteIndex = EMPTY_SPRITE;
+            show(UNOPENED_SPRITE);
+            flagged = false;
+            return false;
         }
         else
         {
-            openedSpriteIndex = numMines;
+            show(FLAG_SPRITE);
+            flagged = true;
+            return true;
         }
     }
 
@@ -133,46 +72,35 @@ public class Tile extends Actor
         }
     }
 
-    private void openSurroundingTiles(Tile[][] board, Minesweeper game)
+    public boolean isOpened()
     {
-        int x = getX();
-        int y = getY();
-        for (int i = x - 1; i <= x + 1; i++)
-        {
-            for (int j = y - 1; j <= y + 1; j++)
-            {
-                try
-                {
-                    board[j][i].open(board, game);
-                }
-                catch (IndexOutOfBoundsException _)
-                {
-                }
-            }
-        }
+        return opened;
     }
 
-    private int numSurroundingFlags(Tile[][] board)
+    public boolean isEmpty()
     {
-        int numFlags = 0;
-        int x = getX();
-        int y = getY();
-        for (int i = x - 1; i <= x + 1; i++)
+        return surroundingMines == EMPTY;
+    }
+
+    public int getSurroundingMines()
+    {
+        return surroundingMines;
+    }
+
+    public void setSurroundingMines(int numSurroundingMines)
+    {
+        this.surroundingMines = numSurroundingMines;
+        if (containsMine)
         {
-            for (int j = y - 1; j <= y + 1; j++)
-            {
-                try
-                {
-                    if (board[j][i].isFlagged())
-                    {
-                        numFlags++;
-                    }
-                }
-                catch (IndexOutOfBoundsException _)
-                {
-                }
-            }
+            openedSpriteIndex = HIT_SPRITE;
         }
-        return numFlags;
+        else if (isEmpty())
+        {
+            openedSpriteIndex = EMPTY_SPRITE;
+        }
+        else
+        {
+            openedSpriteIndex = numSurroundingMines;
+        }
     }
 }

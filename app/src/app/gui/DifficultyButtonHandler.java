@@ -27,21 +27,24 @@ public class DifficultyButtonHandler implements ActionListener
     {
         switch (e.getActionCommand())
         {
-            case Menu.EASY_BUTTON_TEXT:
+            case Menu.EASY_BUTTON_TEXT ->
+            {
                 parent.setNumMines(EASY_NUM_MINES);
                 parent.setBoardHeight(EASY_HEIGHT);
                 parent.setBoardWidth(EASY_WIDTH);
-                break;
-            case Menu.MEDIUM_BUTTON_TEXT:
+            }
+            case Menu.MEDIUM_BUTTON_TEXT ->
+            {
                 parent.setNumMines(MEDIUM_NUM_MINES);
                 parent.setBoardHeight(MEDIUM_HEIGHT);
                 parent.setBoardWidth(MEDIUM_WIDTH);
-                break;
-            case Menu.HARD_BUTTON_TEXT:
+            }
+            case Menu.HARD_BUTTON_TEXT ->
+            {
                 parent.setNumMines(HARD_NUM_MINES);
                 parent.setBoardHeight(HARD_HEIGHT);
                 parent.setBoardWidth(HARD_WIDTH);
-                break;
+            }
         }
         parent.boardSet();
     }
