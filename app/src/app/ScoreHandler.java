@@ -1,50 +1,47 @@
 package app;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Scanner;
+import java.io.*;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 public class ScoreHandler
 {
     public static final int NO_BEST = -1;
     private static final String FILENAME = "bestScores.json";
-    private static final String EMPTY_STR = "";
 
     public int getBest(int width, int height, int numMines)
     {
-        File bestScores = new File(FILENAME);
+        // ensure best scores file exists
+        File scoresFile = new File(FILENAME);
         try
         {
-            bestScores.createNewFile();
+            scoresFile.createNewFile();
         }
         catch (IOException e)
         {
             throw new RuntimeException(e);
         }
+
+        // read file contents into json
+        BufferedReader bufferedReader;
         try
         {
-            Scanner reader = new Scanner(bestScores);
-            StringBuilder data = new StringBuilder(EMPTY_STR);
-            while (reader.hasNext())
-            {
-                data.append(reader.nextLine());
-            }
-            JSONParser jsonParser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(data.toString());
-            jsonObject = (JSONObject) jsonObject.get(width);
-            jsonObject = (JSONObject) jsonObject.get(height);
-            return (int) jsonObject.get(numMines);
+            bufferedReader = new BufferedReader(new FileReader(scoresFile));
         }
         catch (FileNotFoundException e)
         {
             throw new RuntimeException(e);
         }
-        catch (ParseException e)
+        Gson gson = new Gson();
+        JsonObject bestScoresJson = gson.fromJson(bufferedReader, JsonObject.class);
+
+        // query json for best score
+        try
+        {
+            return bestScoresJson.getAsJsonObject(String.valueOf(width)).getAsJsonObject(String.valueOf(height)).get(String.valueOf(numMines)).getAsInt();
+        }
+        catch (NullPointerException e)
         {
             return NO_BEST;
         }
