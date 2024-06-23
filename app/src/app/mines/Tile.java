@@ -1,6 +1,7 @@
 package app.mines;
 
 import ch.aplu.jgamegrid.Actor;
+import ch.aplu.jgamegrid.GGSound;
 
 public class Tile extends Actor
 {
@@ -41,6 +42,14 @@ public class Tile extends Actor
     {
         if (!flagged && !opened)
         {
+            if (containsMine)
+            {
+                gameGrid.playSound(GGSound.EXPLODE);
+            }
+            else
+            {
+                gameGrid.playSound(GGSound.CLICK);
+            }
             show(openedSpriteIndex);
             opened = true;
             return true;
@@ -52,12 +61,14 @@ public class Tile extends Actor
     {
         if (flagged)
         {
+            gameGrid.playSound(GGSound.BOING);
             show(UNOPENED_SPRITE);
             flagged = false;
             return false;
         }
         else
         {
+            gameGrid.playSound(GGSound.PING);
             show(FLAG_SPRITE);
             flagged = true;
             return true;

@@ -1,10 +1,7 @@
 package app.mines;
 
 import app.mines.gameMenu.GameMenuBar;
-import ch.aplu.jgamegrid.GGMouse;
-import ch.aplu.jgamegrid.GGMouseListener;
-import ch.aplu.jgamegrid.GameGrid;
-import ch.aplu.jgamegrid.Location;
+import ch.aplu.jgamegrid.*;
 
 import java.awt.*;
 
@@ -60,6 +57,7 @@ public class Minesweeper extends GameGrid implements GGMouseListener
         int score = statusBar.stopTimer();
         if (alive)
         {
+            playSound(GGSound.NOTIFY);
             board.setFlags();
             return score;
         }
