@@ -1,5 +1,6 @@
 package app.mines;
 
+import app.mines.gameMenu.GameMenuBar;
 import ch.aplu.jgamegrid.GGMouse;
 import ch.aplu.jgamegrid.GGMouseListener;
 import ch.aplu.jgamegrid.GameGrid;
@@ -30,14 +31,16 @@ public class Minesweeper extends GameGrid implements GGMouseListener
         addMouseListener(this, GGMouse.lClick | GGMouse.rClick | GGMouse.lDClick);
         board = new Board(this, width, height, numMines);
         statusBar = new StatusBar(this, numMines, best);
+        getFrame().setMenuBar(new GameMenuBar(this));
+        getFrame().pack();
     }
 
     public synchronized int runGame()
     {
         initGame();
         doRun();
-        Thread thread = new Thread(statusBar);
-        thread.start();
+        Thread statusBarThread = new Thread(statusBar);
+        statusBarThread.start();
         while (alive)
         {
             try
@@ -108,6 +111,13 @@ public class Minesweeper extends GameGrid implements GGMouseListener
     public Board getBoard()
     {
         return board;
+    }
+
+    public void close()
+    {
+        mineHit();
+        stopGameThread();
+        dispose();
     }
 
     private void initGame()

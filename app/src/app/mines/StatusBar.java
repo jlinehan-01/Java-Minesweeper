@@ -12,7 +12,7 @@ public class StatusBar implements Runnable
     private final Board board;
     private final int numMines;
     private final boolean havePreviousBest;
-    private String bestStr;
+    private final String bestStr;
 
     private int best;
     private long startTime;

@@ -99,6 +99,7 @@ public class Menu
 
         // add all to frame
         frame.add(backgroundPanel);
+        frame.setContentPane(backgroundPanel);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }

@@ -3,9 +3,10 @@ package app;
 import app.gui.Menu;
 import app.mines.Minesweeper;
 
-public class Driver
+public class Driver implements Runnable
 {
-    public static void main(String[] args)
+    @Override
+    public void run()
     {
         Menu menu = new Menu(Minesweeper.TITLE);
         int numMines = menu.getNumMines();
