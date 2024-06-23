@@ -7,6 +7,7 @@ public class StatusBar implements Runnable
     private static final int STATUS_BAR_HEIGHT = 30;
     private static final int MILLISECONDS_PER_SECOND = 1000;
     private static final int REFRESH_RATE = 500;
+    private static final String TUTORIAL_TEXT = "Left click: Open tile | Right click: Flag tile | Double click: Clear surrounding tiles";
 
     private final Minesweeper game;
     private final Board board;
@@ -37,7 +38,7 @@ public class StatusBar implements Runnable
 
         board = game.getBoard();
         game.addStatusBar(STATUS_BAR_HEIGHT);
-        game.setStatusText("Mines: " + numMines + " Time: 0" + getBestStr());
+        game.setStatusText(TUTORIAL_TEXT);
     }
 
     @Override
