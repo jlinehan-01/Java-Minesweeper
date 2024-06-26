@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"app"},{"l":"app.gui"},{"l":"app.mines"},{"l":"app.mines.gameMenu"}];updateSearchResults();

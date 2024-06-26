@@ -3,10 +3,24 @@ package app.gui;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The GUI used to configure the game
+ *
+ * @author Joshua Linehan
+ */
 public class Menu
 {
+    /**
+     * The text displayed on the Easy difficulty button
+     */
     public static final String EASY_BUTTON_TEXT = "Easy";
+    /**
+     * The text displayed on the Medium difficulty button
+     */
     public static final String MEDIUM_BUTTON_TEXT = "Medium";
+    /**
+     * The text displayed on the Hard difficulty button
+     */
     public static final String HARD_BUTTON_TEXT = "Hard";
 
     private static final int HEIGHT = 310;
@@ -24,6 +38,11 @@ public class Menu
     private int numMines;
     private boolean buttonPressed = false;
 
+    /**
+     * Creates and displays the GUI
+     *
+     * @param title The title displayed on the GUI
+     */
     public Menu(String title)
     {
         FocusEventHandler focusEventHandler = new FocusEventHandler();
@@ -99,43 +118,104 @@ public class Menu
 
         // add all to frame
         frame.add(backgroundPanel);
+        frame.setContentPane(backgroundPanel);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
+    /**
+     * Gets the number of mines to be placed on the board once entered by the user
+     *
+     * @return The number of mines
+     */
     public int getNumMines()
     {
         waitForButtonPress();
         return numMines;
     }
 
+    /**
+     * Sets the number of mines on the board
+     *
+     * @param numMines the number of mines, entered by the user
+     */
     public void setNumMines(int numMines)
     {
         this.numMines = numMines;
     }
 
+    /**
+     * Gets the height of the board once entered by the user
+     *
+     * @return The number of tiles high the board is to be
+     */
     public int getBoardHeight()
     {
         waitForButtonPress();
         return boardHeight;
     }
 
+    /**
+     * Sets the tile height of the board
+     *
+     * @param boardHeight The height of the board, entered by the user
+     */
     public void setBoardHeight(int boardHeight)
     {
         this.boardHeight = boardHeight;
     }
 
+    /**
+     * Gets the width of the board once entered by the user
+     *
+     * @return The number of tiles wide the board is to be
+     */
     public int getBoardWidth()
     {
         waitForButtonPress();
         return boardWidth;
     }
 
+    /**
+     * Sets the tile width of the board
+     *
+     * @param boardWidth The width of the board, entered by the user
+     */
     public void setBoardWidth(int boardWidth)
     {
         this.boardWidth = boardWidth;
     }
 
+    /**
+     * Closes the menu
+     */
+    public void close()
+    {
+        frame.dispose();
+    }
+
+    /**
+     * Flags that board data has been received and wakes any waiting threads
+     */
+    public synchronized void boardSet()
+    {
+        buttonPressed = true;
+        notifyAll();
+    }
+
+    /**
+     * Displays text in response to an invalid custom input
+     *
+     * @param errorMessage The text to be displayed
+     */
+    public void setErrorText(String errorMessage)
+    {
+        errorText.setText(errorMessage);
+    }
+
+    /**
+     * Pauses execution until board information is set
+     */
     private synchronized void waitForButtonPress()
     {
         if (!buttonPressed)
@@ -149,21 +229,5 @@ public class Menu
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    public void close()
-    {
-        frame.dispose();
-    }
-
-    public synchronized void boardSet()
-    {
-        buttonPressed = true;
-        notifyAll();
-    }
-
-    public void setErrorText(String errorMessage)
-    {
-        errorText.setText(errorMessage);
     }
 }

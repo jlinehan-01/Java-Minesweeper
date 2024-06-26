@@ -3,6 +3,11 @@ package app.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Handles use of the Easy, Medium, and Hard buttons in the menu
+ *
+ * @author Joshua Linehan
+ */
 public class DifficultyButtonHandler implements ActionListener
 {
     private static final int EASY_NUM_MINES = 10;
@@ -17,11 +22,21 @@ public class DifficultyButtonHandler implements ActionListener
 
     private final Menu parent;
 
+    /**
+     * Creates a DifficultyButtonHandler with a reference to the Menu instance
+     *
+     * @param parent The Menu instance which contains the difficulty buttons
+     */
     public DifficultyButtonHandler(Menu parent)
     {
         this.parent = parent;
     }
 
+    /**
+     * Sets board to appropriate configuration in response to press of a specific difficulty button
+     *
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e)
     {

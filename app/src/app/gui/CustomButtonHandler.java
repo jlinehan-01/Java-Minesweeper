@@ -4,6 +4,11 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Handles custom game input from GUI
+ *
+ * @author Joshua Linehan
+ */
 public class CustomButtonHandler implements ActionListener
 {
     private static final int MAX_WIDTH = 50;
@@ -15,6 +20,14 @@ public class CustomButtonHandler implements ActionListener
     private final JTextField numMinesField;
     private final Menu parent;
 
+    /**
+     * Creates a CustomButtonHandler instance with records of the Menu and its text fields
+     *
+     * @param widthField    The width text field
+     * @param heightField   The height text field
+     * @param numMinesField The mines text field
+     * @param parent        The Menu instance
+     */
     public CustomButtonHandler(JTextField widthField, JTextField heightField, JTextField numMinesField, Menu parent)
     {
         this.widthField = widthField;
@@ -23,6 +36,11 @@ public class CustomButtonHandler implements ActionListener
         this.parent = parent;
     }
 
+    /**
+     * Handles custom button press event
+     *
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e)
     {
@@ -67,6 +85,12 @@ public class CustomButtonHandler implements ActionListener
         parent.boardSet();
     }
 
+    /**
+     * Verifies input from a text field contains only numbers
+     *
+     * @param text Input obtained from a JTextField
+     * @return true is text is invalid, false if text contains only numbers
+     */
     private boolean badInput(String text)
     {
         try

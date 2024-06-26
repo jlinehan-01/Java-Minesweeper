@@ -3,9 +3,19 @@ package app;
 import app.gui.Menu;
 import app.mines.Minesweeper;
 
-public class Driver
+/**
+ * Handles creation of the GUI and Minesweeper windows as well as communicating with ScoreHandler
+ *
+ * @author Joshua Linehan
+ */
+public class Driver implements Runnable
 {
-    public static void main(String[] args)
+    /**
+     * The method run when a driver thread is started. Creates a GUI window, creates a Minesweeper instance based on GUI
+     * input, and passes Minesweeper result to ScoreHandler
+     */
+    @Override
+    public void run()
     {
         Menu menu = new Menu(Minesweeper.TITLE);
         int numMines = menu.getNumMines();
