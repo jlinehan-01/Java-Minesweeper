@@ -8,11 +8,29 @@ import com.google.gson.JsonPrimitive;
 
 import java.io.*;
 
+/**
+ * Handles storage and retrieval of best scores
+ *
+ * @author Joshua Linehan
+ */
 public class ScoreHandler
 {
+    /**
+     * An integer representing that no best score for the given Board configuration was found
+     */
     public static final int NO_BEST = -1;
+
     private static final String FILENAME = "bestScores.json";
 
+    /**
+     * Finds the current best score for the given board configuration
+     *
+     * @param width    The width of the board to find the score for
+     * @param height   The height of the board to find the score for
+     * @param numMines The number of mines of the board to find the score for
+     * @return The current best score of the board if one is found, or
+     * {@link #NO_BEST an integer indicating that no best score was found}
+     */
     public int getBest(int width, int height, int numMines)
     {
         JsonObject bestScoresJson = getJson();
@@ -28,6 +46,14 @@ public class ScoreHandler
         }
     }
 
+    /**
+     * Stores a result as the new best score if it is better than the previous best
+     *
+     * @param width    the width of the game board
+     * @param height   the height of the game board
+     * @param numMines the number of miens on the game board
+     * @param score    the time taken to complete the game
+     */
     public void handleResult(int width, int height, int numMines, int score)
     {
         String widthKey = String.valueOf(width);
@@ -81,6 +107,11 @@ public class ScoreHandler
         }
     }
 
+    /**
+     * Parses a JSON file into a JsonObject, creating the file if it does not exist
+     *
+     * @return a JsonObject representing the contents of the file
+     */
     private JsonObject getJson()
     {
         // ensure best scores file exists
@@ -108,6 +139,11 @@ public class ScoreHandler
         return gson.fromJson(bufferedReader, JsonObject.class);
     }
 
+    /**
+     * Writes a JsonObject to a JSON file
+     *
+     * @param jsonObject The object to be written to the file
+     */
     private void writeJson(JsonObject jsonObject)
     {
         try
